@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 using System.Drawing;
 
 namespace SocialWeb_MVC_.Models
@@ -6,6 +7,7 @@ namespace SocialWeb_MVC_.Models
     public class PostModel
     {
         public int Uid { get; set; }
+        public string Name { get; set; }
         public string Title { get; set; }
         public string Img { get; set; }
         public string Description { get; set; }
@@ -21,7 +23,7 @@ namespace SocialWeb_MVC_.Models
             cmd.Parameters.AddWithValue("@Des", obj.Description);
             con.Open();
             int i = cmd.ExecuteNonQuery();
-
+            con.Close();
             return i == 1;
 
             //if(i == 1)
@@ -29,6 +31,28 @@ namespace SocialWeb_MVC_.Models
             //    return true;
             //}
             //return false;
+        }
+        public List<PostModel> getData(int uid) 
+        {
+            List<PostModel> lst = new List<PostModel>();
+            //SqlCommand cmd = new SqlCommand("select * from Posts where Uid != @uid", con);
+            SqlCommand cmd = new SqlCommand("select * from Posts INNER JOIN Users ON Posts.Uid = Users.UserId where Posts.Uid != @uid order by Posts.Pid desc", con);
+            cmd.Parameters.AddWithValue("@uid", uid);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            while(dr.Read())
+            {
+                lst.Add(new PostModel
+                {
+                    Uid = Convert.ToInt32(dr["Uid"]),
+                    Name = dr["UserName"].ToString(),
+                    Title = dr["PostTitle"].ToString(),
+                    Img = dr["PostImg"].ToString(),
+                    Description = dr["PostDes"].ToString(),
+                    Likes = dr["PostLikes"].ToString()
+                }) ;
+            }
+            return lst; 
         }
     }
 }

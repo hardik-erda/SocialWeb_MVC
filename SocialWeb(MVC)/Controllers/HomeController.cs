@@ -19,7 +19,9 @@ namespace SocialWeb_MVC_.Controllers
             {
                 return RedirectToAction("SignIn", "Users");
             }
-            return View();
+            PostModel obj = new PostModel();
+            List<PostModel> lstobj = obj.getData(Convert.ToInt32( TempData["uid"]));
+            return View(lstobj);
         }
 
         public IActionResult Privacy()

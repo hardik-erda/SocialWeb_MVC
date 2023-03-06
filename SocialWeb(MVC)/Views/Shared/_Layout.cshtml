@@ -38,17 +38,17 @@
         @*---Start------copied from old proj.-----*@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="dashboard.aspx">Social Web</a>
+                <a class="navbar-brand" asp-action="Index" asp-controller="Home">Social Web</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="true" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse show" id="navbarColor01" style="">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Add new Post</a>
+                            <a class="nav-link" asp-action="AddPost" asp-controller="Users">Add new Post</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
+                            <a class="nav-link" asp-action="Profile" asp-controller="Users">Profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link"  asp-action="logout" asp-controller="Users">Logout</a>
