@@ -93,5 +93,10 @@ namespace SocialWeb_MVC_.Controllers
             }
             return View();
         }
+        [HttpGet]
+        public IActionResult Profile() 
+        {
+            return View();
+        }
     }
 }

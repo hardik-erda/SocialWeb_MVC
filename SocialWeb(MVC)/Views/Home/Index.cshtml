@@ -1,8 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@foreach (PostModel item in Model)
+{
+    <div class="card border-dark mt-5 mb-3 w-50 mx-auto">
+        <div class="card-header">@item.Name</div>
+        <div class="card-body">
+            <h4 class="card-title">@item.Title</h4>
+            <img src="~/NewFolder/@item.Img" class="img-fluid" />
+            <p class="card-text mt-2">@item.Description</p>
+            <h4>Likes: @item.Likes</h4>
+        </div>
+    </div>
+}
