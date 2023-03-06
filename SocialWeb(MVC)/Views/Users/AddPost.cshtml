@@ -1,0 +1,26 @@
+﻿@model SocialWeb_MVC_.Models.PostModel
+@{
+    ViewData["Title"] = "AddPost";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" asp-action="AddPost" asp-controller="Users" enctype="multipart/form-data">
+
+    <div class="d-flex justify-content-center mt-5">
+        <div class="card mb-5 border-dark w-50 p-5">
+            <label class="card-text h4">Title for post: </label>
+            @*<asp:TextBox ID="tb_title" runat="server" CssClass="form-control mb-3 mt-2"/>*@
+            <input type="text" asp-for="Title" name="Title" placeholder="Enter Title"/>
+            <label class="card-text mb-2 h4">Img for post: </label>
+            @*<asp:FileUpload runat="server" ID="fu_post" accept=".png,.jpg,.jpeg,.gif" CssClass="form-control"/>*@
+            @*<input type="file" asp-for="Img" multiple/>*@
+            <label class="card-text mt-3 mb-2 h4">Description for post: </label>
+            <textarea asp-for="Description" name="Description" class="form-control"></textarea>
+            @*<asp:Button runat="server" ID="btn_post" Text="Post" OnClick="btn_post_Click" CssClass="btn btn-dark mt-3"/>*@
+            <button type="submit" class="btn btn-dark mt-3">Post</button>
+            
+        </div>
+    </div>
+</form>
+
+
