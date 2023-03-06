@@ -26,7 +26,9 @@ namespace SocialWeb_MVC_.Controllers
 
                 if (res)
                 {
+                    
                     HttpContext.Session.SetString("username", obj.UserName.ToString());
+                    TempData["uid"]= userobj.getUid(obj.UserName.ToString());                   
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -64,6 +66,30 @@ namespace SocialWeb_MVC_.Controllers
             else
             {
                 TempData["isSignUp"] = false;
+            }
+            return View();
+        }
+        [HttpGet]
+        public IActionResult AddPost()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddPost(PostModel obj)
+        {
+            bool res;
+            obj.Uid = Convert.ToInt32(TempData["uid"]);
+            PostModel userobj = new PostModel();
+            res = userobj.AddPost(obj);
+
+            if (res)
+            {
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                TempData["isAddPost"] = false;
             }
             return View();
         }

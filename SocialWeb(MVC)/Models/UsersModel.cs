@@ -22,10 +22,11 @@ namespace SocialWeb_MVC_.Models
 
             if (dr.HasRows)
             {
-
+                dr.Close();
                 return true;
                 //int i = cmd.ExecuteNonQuery();
             }
+            dr.Close();
             ////if (i >= 1)
             ////{
             ////    return true;
@@ -43,12 +44,35 @@ namespace SocialWeb_MVC_.Models
             int i = cmd.ExecuteNonQuery();
 
             return i == 1;
+            con.Close();
 
             //if(i == 1)
             //{
             //    return true;
             //}
             //return false;
+        }
+
+        public int getUid(string UserName)
+        {
+            SqlCommand cmd = new SqlCommand("Select * from Users where UserName = @UserName", con);
+
+            //return obj.name;
+            cmd.Parameters.AddWithValue("@UserName", UserName);
+
+            //con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            if (dr.HasRows)
+            {
+                while(dr.Read())
+                {
+                return Convert.ToInt32( dr["UserId"]);
+                }
+                //int i = cmd.ExecuteNonQuery();
+            }
+            con.Close();
+            return 0;
         }
     }
 }
