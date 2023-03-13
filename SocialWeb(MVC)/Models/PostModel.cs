@@ -52,7 +52,32 @@ namespace SocialWeb_MVC_.Models
                     Likes = dr["PostLikes"].ToString()
                 }) ;
             }
+            con.Close();
             return lst; 
+        }
+        public List<PostModel> getPostData(int uid, string uname)
+        {
+            List<PostModel> lst = new List<PostModel>();
+            
+            SqlCommand cmd = new SqlCommand("select * from Posts where Uid = @uid", con);
+            cmd.Parameters.AddWithValue("@uid", uid);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                lst.Add(new PostModel
+                {
+                    Uid = Convert.ToInt32(dr["Uid"]),
+                    //Name = dr["UserName"].ToString(),
+                    Name = uname,
+                    Title = dr["PostTitle"].ToString(),
+                    Img = dr["PostImg"].ToString(),
+                    Description = dr["PostDes"].ToString(),
+                    Likes = dr["PostLikes"].ToString()
+                });
+            }
+            con.Close();
+            return lst;
         }
     }
 }
