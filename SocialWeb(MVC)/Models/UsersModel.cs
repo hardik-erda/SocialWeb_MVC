@@ -27,6 +27,7 @@ namespace SocialWeb_MVC_.Models
                 //int i = cmd.ExecuteNonQuery();
             }
             dr.Close();
+            con.Close();
             ////if (i >= 1)
             ////{
             ////    return true;
@@ -60,6 +61,10 @@ namespace SocialWeb_MVC_.Models
             //return obj.name;
             cmd.Parameters.AddWithValue("@UserName", UserName);
 
+            if(con.State == System.Data.ConnectionState.Closed)
+            {
+                con.Open();
+            }
             //con.Open();
             SqlDataReader dr = cmd.ExecuteReader();
 

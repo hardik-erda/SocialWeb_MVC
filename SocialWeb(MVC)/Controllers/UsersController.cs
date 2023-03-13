@@ -94,9 +94,14 @@ namespace SocialWeb_MVC_.Controllers
             return View();
         }
         [HttpGet]
+
         public IActionResult Profile() 
         {
-            return View();
+            UsersModel userobj = new UsersModel();
+            TempData["uid"] = userobj.getUid(HttpContext.Session.GetString("username"));
+            PostModel obj1 = new PostModel();
+            List<PostModel> lstobj1 = obj1.getPostData(Convert.ToInt32(TempData["uid"]), HttpContext.Session.GetString("username"));
+            return View(lstobj1);
         }
     }
 }
