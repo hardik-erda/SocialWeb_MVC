@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+
 @foreach (PostModel item in Model)
 {
     <div class="card border-dark mt-5 mb-3 w-50 mx-auto">
@@ -10,6 +11,7 @@
             <img src="~/NewFolder/@item.Img" class="img-fluid" />
             <p class="card-text mt-2">@item.Description</p>
             <h4>Likes: @item.Likes</h4>
+            <a asp-action="LikePost" asp-controller="Users" asp-route-id="@item.Pid" class="btn btn-primary"><i class="fa-solid fa-thumbs-up"></i> Like</a>
         </div>
     </div>
 }

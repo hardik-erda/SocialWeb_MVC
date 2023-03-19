@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "FollowingList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>FollowingList</h1>
+
+@foreach (FriendsModel item in Model)
+{
+    <div class="card mb-5 border-dark mt-5 p-2 mx-auto w-50">
+        <div class="d-flex">
+            <img class="rounded-circle float-start" width="120" height="120" src="~/NewFolder/@(item.ProFileImg)" />
+            <lable class="align-self-center m-auto h2">@item.followerName</lable>
+            <a asp-action="Unfollow" asp-route-id="@item.followers" asp-controller="Users" class="btn btn-danger  my-auto mx-auto h-50">Unfollow</a>
+        </div>
+    </div>
+}
+

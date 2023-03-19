@@ -1,15 +1,8 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-@*<h1>Profile</h1>*@
-
-@*@foreach(UsersModel item in Model)
-{
-    
-}*@
+@model dynamic
 
 <div class="container py-5 h-100">
     <div class="row  justify-content-center h-100  w-100 ">
@@ -18,24 +11,22 @@
                 <div class="card-body p-4">
                     <div class="d-block text-black">
                         <div class="flex-shrink-0">
-                            @*<asp:Image ID="img_profile" runat="server"
-                                       alt="Generic placeholder image" CssClass="img-fluid"
-                                       Style="width: 400px; border-radius: 10px;" />*@
-                            <img class="img-fluid" Style="width: 400px; border-radius: 10px;" src="~/NewFolder/ProfilePics/1.jpg" />
-                            @*<asp:Label ID="lb_pname" CssClass="h1 text-uppercase" runat="server"></asp:Label>*@
-                            <label class="h1 text-uppercase">UserName</label>
-                            @*<asp:Button ID="btn_edit" Text="Edit" OnClick="editPname_ServerClick" runat="server" CssClass="btn btn-dark ms-3" />*@
-                            <button class="btn btn-dark ms-3">Edit</button>
+                            <img class="img-fluid" Style="width: 400px; border-radius: 10px;" src="~/NewFolder/ProfilePics/@(TempData["uid"]).jpg" />
+                            <label class="h1 text-uppercase">@TempData["username"]</label>
+                            <a class="btn btn-dark ms-3" asp-action="EditProfile" asp-controller="Users">Edit</a>
                         </div>
                     </div>
 
+                    @foreach (FriendsModel item in Model.numFollow)
+                    {
+                        
                     <div class="row w-75 m-auto mt-2">
                         <div class="col">
                             <div class="card border-dark m-3 " style="max-width: 20rem;">
                                 <div class="card-body">
-                                    <h4 class="card-title text-center fs-1" runat="server" id="lb_countFollowers">250K</h4>
+                                    <h4 class="card-title text-center fs-1" runat="server" id="lb_countFollowers">@item.followers</h4>
                                 </div>
-                                <button class="card-header fs-3 bg-dark text-white text-center">Followers</button>
+                                    <a class="card-header fs-3 bg-dark text-white text-center text-decoration-none" asp-action="FollowerList" asp-controller="Users">Followers</a>
 
                             </div>
                         </div>
@@ -43,22 +34,22 @@
                         <div class="col">
                             <div class="card border-dark m-3" style="max-width: 20rem;">
                                 <div class="card-body">
-                                    <h4 class="card-title text-center fs-1" runat="server" id="lb_countFollowing">100K</h4>
+                                    <h4 class="card-title text-center fs-1" id="lb_countFollowing">@item.following</h4>
                                 </div>
                                 
-                                @*<asp:LinkButton OnClick="btn_Following_ServerClick" ID="btn_Following" class="card-header fs-3 bg-dark text-white text-center text-decoration-none" runat="server" Text="Following"></asp:LinkButton>*@
-                                <a class="card-header fs-3 bg-dark text-white text-center text-decoration-none">Following</a>
+                                <a class="card-header fs-3 bg-dark text-white text-center text-decoration-none" asp-action="FollowingList" asp-controller="Users">Following</a>
                             </div>
                         </div>
                         <div class="col">
                             <div class="card border-dark m-3" style="max-width: 20rem;">
                                 <div class="card-body">
-                                    <h4 class="card-title text-center fs-1" runat="server" id="lb_countPost">10</h4>
+                                    <h4 class="card-title text-center fs-1" runat="server" id="lb_countPost">@item.numPost</h4>
                                 </div>
                                 <div class="card-header fs-3 bg-dark text-white text-center">Posts</div>
                             </div>
                         </div>
                     </div>
+                    }
                 </div>
                 <div class="m-auto mb-4">
 
@@ -74,7 +65,7 @@
             </div>
         </div>
     </div>
-    @foreach (PostModel item in Model)
+    @foreach (PostModel item in Model.numpost)
     {
         <div class="card border-dark mt-5 mb-3 w-50 mx-auto">
             <div class="card-header">@item.Name</div>
