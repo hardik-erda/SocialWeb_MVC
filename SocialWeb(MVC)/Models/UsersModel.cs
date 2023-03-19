@@ -1,12 +1,15 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 
 namespace SocialWeb_MVC_.Models
 {
     public class UsersModel
     {
+        public int? Uid { get; set; }
+
         public string UserName { get; set; }
         public string Password { get; set; }
-        //public string ProfilePic { get; set; }
+        public string ProfilePic { get; set; }
 
         SqlConnection con = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"E:\\Sem 6\\ASP\\SocialWeb(MVC)\\SocialWeb(MVC)\\App_Data\\db_socialMedia.mdf\";Integrated Security=True");
 
@@ -44,8 +47,8 @@ namespace SocialWeb_MVC_.Models
             con.Open();
             int i = cmd.ExecuteNonQuery();
 
-            return i == 1;
             con.Close();
+            return i == 1;
 
             //if(i == 1)
             //{
@@ -78,6 +81,41 @@ namespace SocialWeb_MVC_.Models
             }
             con.Close();
             return 0;
+        }
+        public List<UsersModel> getSearchList(UsersModel obj)
+        {
+            SqlCommand cmd = new SqlCommand("select UserId,UserName,ProfileImg from Users where UserName Like '%"+ obj.UserName + "%' and UserId not in (select FollowingId from Friends where Uid=@uid)", con);
+            con.Open();
+            cmd.Parameters.AddWithValue("@uid", obj.Uid);
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            List<UsersModel> lst = new List<UsersModel>();
+            while(dr.Read())
+            {
+
+                lst.Add(new UsersModel
+                {
+                    Uid = Convert.ToInt32(dr["UserId"]),
+                    UserName = dr["UserName"].ToString(),
+                    ProfilePic = dr["ProfileImg"].ToString()
+                });
+            }
+            con.Close();    
+            return lst;
+        }
+        public bool updateUser(UsersModel obj)
+        {
+            SqlCommand cmd = new SqlCommand("update Users set UserName=@uname where UserId = @uid",con);
+            cmd.Parameters.AddWithValue("@uname",obj.UserName);
+            cmd.Parameters.AddWithValue("@uid", obj.Uid);
+            con.Open();
+            int i =cmd.ExecuteNonQuery();
+            con.Close();   
+            if (i == 1)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

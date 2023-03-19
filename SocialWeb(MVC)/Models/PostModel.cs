@@ -7,6 +7,7 @@ namespace SocialWeb_MVC_.Models
     public class PostModel
     {
         public int Uid { get; set; }
+        public int Pid { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
         public string Img { get; set; }
@@ -45,6 +46,7 @@ namespace SocialWeb_MVC_.Models
                 lst.Add(new PostModel
                 {
                     Uid = Convert.ToInt32(dr["Uid"]),
+                    Pid = Convert.ToInt32(dr["Pid"]),
                     Name = dr["UserName"].ToString(),
                     Title = dr["PostTitle"].ToString(),
                     Img = dr["PostImg"].ToString(),
@@ -59,7 +61,7 @@ namespace SocialWeb_MVC_.Models
         {
             List<PostModel> lst = new List<PostModel>();
             
-            SqlCommand cmd = new SqlCommand("select * from Posts where Uid = @uid", con);
+            SqlCommand cmd = new SqlCommand("select * from Posts where Uid = @uid order by Pid desc", con);
             cmd.Parameters.AddWithValue("@uid", uid);
             con.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -78,6 +80,21 @@ namespace SocialWeb_MVC_.Models
             }
             con.Close();
             return lst;
+        }
+        public bool LikePost(int pid)
+        {
+            SqlCommand cmd = new SqlCommand("update Posts set PostLikes =(select PostLikes from Posts where Pid = @pid)+1  where Pid = @pid", con);
+            cmd.Parameters.AddWithValue("@pid", pid);
+            con.Open();
+            int i = cmd.ExecuteNonQuery();
+            if (i >= 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

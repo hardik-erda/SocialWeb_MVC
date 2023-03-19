@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SocialWeb_MVC_.Models;
+using System.Dynamic;
 
 namespace SocialWeb_MVC_.Controllers
 {
@@ -28,7 +30,9 @@ namespace SocialWeb_MVC_.Controllers
                 {
                     
                     HttpContext.Session.SetString("username", obj.UserName.ToString());
-                    TempData["uid"]= userobj.getUid(obj.UserName.ToString());                   
+                    HttpContext.Session.SetInt32("uid", userobj.getUid(obj.UserName.ToString()));
+                //TempData["uid"]= userobj.getUid(obj.UserName.ToString());
+                    TempData["username"] = obj.UserName.ToString();
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -78,7 +82,8 @@ namespace SocialWeb_MVC_.Controllers
         public IActionResult AddPost(PostModel obj)
         {
             bool res;
-            obj.Uid = Convert.ToInt32(TempData["uid"]);
+            obj.Uid=Convert.ToInt32(HttpContext.Session.GetInt32("uid"));
+            //obj.Uid = Convert.ToInt32(TempData["uid"]);
             PostModel userobj = new PostModel();
             res = userobj.AddPost(obj);
 
@@ -98,10 +103,97 @@ namespace SocialWeb_MVC_.Controllers
         public IActionResult Profile() 
         {
             UsersModel userobj = new UsersModel();
-            TempData["uid"] = userobj.getUid(HttpContext.Session.GetString("username"));
+            //TempData["uid"] = userobj.getUid(HttpContext.Session.GetString("username"));
+            TempData["uid"] = HttpContext.Session.GetInt32("uid");
+            TempData["username"] = HttpContext.Session.GetString("username");
             PostModel obj1 = new PostModel();
-            List<PostModel> lstobj1 = obj1.getPostData(Convert.ToInt32(TempData["uid"]), HttpContext.Session.GetString("username"));
-            return View(lstobj1);
+            List<PostModel> lstobj1 = obj1.getPostData(Convert.ToInt32(HttpContext.Session.GetInt32("uid")), HttpContext.Session.GetString("username"));
+            FriendsModel obj = new FriendsModel();
+            List<FriendsModel> lst = obj.countFollow(Convert.ToInt32(HttpContext.Session.GetInt32("uid")));
+            dynamic myModel = new ExpandoObject();
+            myModel.numpost = lstobj1;
+            myModel.numFollow = lst;
+            return View(myModel);
+        }
+
+        [HttpGet]
+        public IActionResult EditProfile()
+        {
+            
+            return View();
+        }
+        [HttpPost]
+        public IActionResult EditProfile(UsersModel obj)
+        {
+            obj.Uid = HttpContext.Session.GetInt32("uid");
+            bool res = obj.updateUser(obj);
+            if(res)
+            {
+                
+                HttpContext.Session.SetString("username", obj.UserName);
+                return RedirectToAction("Profile","Users");
+            }
+            return View();
+        }
+
+        public IActionResult FollowerList()
+        {
+            FriendsModel obj = new FriendsModel();
+            List <FriendsModel> lst= obj.getFollowersList(Convert.ToInt32(HttpContext.Session.GetInt32("uid")));
+            return View(lst);
+        }
+        public IActionResult FollowingList()
+        {
+            FriendsModel obj = new FriendsModel();
+            List<FriendsModel> lst = obj.getFollowingList(Convert.ToInt32(HttpContext.Session.GetInt32("uid")));
+            return View(lst);
+        }
+
+        
+        public IActionResult SearchList(UsersModel obj)
+        {
+            UsersModel obj2 = new UsersModel();
+            obj.Uid = HttpContext.Session.GetInt32("uid");
+            TempData["uid"] = HttpContext.Session.GetInt32("uid");
+            List<UsersModel> lst = obj2.getSearchList(obj);
+            return View(lst);
+        }
+
+        public IActionResult Unfollow(int id)
+        {
+            FriendsModel obj = new FriendsModel();
+            bool res =obj.UnfollowFromList(Convert.ToInt32(HttpContext.Session.GetInt32("uid")),id);
+            if(res)
+            {
+                return RedirectToAction("Profile", "Users");
+                
+            }
+             return View();
+            
+        }
+        public IActionResult follow(int id)
+        {
+            FriendsModel obj = new FriendsModel();
+            bool res = obj.followFromList(Convert.ToInt32(HttpContext.Session.GetInt32("uid")), id);
+            if (res)
+            {
+                return RedirectToAction("Profile", "Users");
+
+            }
+            return View();
+
+        }
+        public IActionResult LikePost(int id)
+        {
+            PostModel obj = new PostModel();
+            bool res = obj.LikePost(id);
+            if (res)
+            {
+                return RedirectToAction("Index", "Home");
+
+            }
+            return View();
+
         }
     }
 }

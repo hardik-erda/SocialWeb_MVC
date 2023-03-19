@@ -20,7 +20,7 @@ namespace SocialWeb_MVC_.Controllers
                 return RedirectToAction("SignIn", "Users");
             }
             PostModel obj = new PostModel();
-            List<PostModel> lstobj = obj.getData(Convert.ToInt32( TempData["uid"]));
+            List<PostModel> lstobj = obj.getData(Convert.ToInt32(HttpContext.Session.GetInt32("uid")));
             return View(lstobj);
         }
 

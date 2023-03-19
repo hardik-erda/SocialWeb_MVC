@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "SearchList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>SearchList </h1>
+
+@foreach (UsersModel item in Model)
+{
+    @if(item.Uid == Convert.ToInt32(TempData["uid"]))
+    {
+        continue;
+    }
+    <div class="card mb-5 border-dark mt-5 p-2 mx-auto w-50">
+        <div class="d-flex">
+            <img class="rounded-circle float-start" width="120" height="120" src="~/NewFolder/@item.ProfilePic" />
+            <lable class="align-self-center m-auto h2">@item.UserName</lable>
+            <a class="btn btn-success my-auto mx-auto h-50" asp-action="follow" asp-controller="Users" asp-route-id="@item.Uid">+ Follow</a>
+        </div>
+    </div>
+}
