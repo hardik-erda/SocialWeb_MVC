@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SocialWeb_MVC_.Models;
 using System.Dynamic;
+using System.Reflection;
 
 namespace SocialWeb_MVC_.Controllers
 {
@@ -57,15 +58,33 @@ namespace SocialWeb_MVC_.Controllers
         [HttpPost]
         public IActionResult SignUp(UsersModel obj)
         {
-            bool res;
+            //add for file upload
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/NewFolder/ProfilePics");
+            FileInfo fileInfo = new FileInfo(obj.File.FileName);
+            
 
+            bool res;
             UsersModel userobj = new UsersModel();
             res = userobj.SignUp(obj);
 
             if (res)
             {
-                
-                return RedirectToAction("SignIn", "Users");
+                //add for file upload
+
+                int uid = obj.getUid(obj.UserName);
+                string fileName = uid + fileInfo.Extension;
+
+                string fileNameWithPath = Path.Combine(path, fileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    obj.File.CopyTo(stream);
+                }
+                if(obj.updateProfileImgPath(fileName,uid))
+                {
+                    return RedirectToAction("SignIn", "Users");
+                }
+
             }
             else
             {

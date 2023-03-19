@@ -11,7 +11,11 @@ namespace SocialWeb_MVC_.Models
         public string Password { get; set; }
         public string ProfilePic { get; set; }
 
-        SqlConnection con = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"E:\\Sem 6\\ASP\\SocialWeb(MVC)\\SocialWeb(MVC)\\App_Data\\db_socialMedia.mdf\";Integrated Security=True");
+        //add for file upload 
+        public string FileName { get; set; }
+        public IFormFile File { get; set; }
+
+        SqlConnection con = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"E:\\Sem 6\\ASP\\SocialWeb(MVC)\\SocialWeb(MVC)\\App_Data\\db_socialMedia.mdf\";Integrated Security=True;MultipleActiveResultSets=true");
 
         public bool signIn(UsersModel obj)
         {
@@ -30,6 +34,7 @@ namespace SocialWeb_MVC_.Models
                 //int i = cmd.ExecuteNonQuery();
             }
             dr.Close();
+            cmd.Cancel();
             con.Close();
             ////if (i >= 1)
             ////{
@@ -44,9 +49,11 @@ namespace SocialWeb_MVC_.Models
 
             cmd.Parameters.AddWithValue("@UserName", obj.UserName);
             cmd.Parameters.AddWithValue("@Password", obj.Password);
+
             con.Open();
             int i = cmd.ExecuteNonQuery();
 
+            cmd.Cancel();
             con.Close();
             return i == 1;
 
@@ -79,6 +86,8 @@ namespace SocialWeb_MVC_.Models
                 }
                 //int i = cmd.ExecuteNonQuery();
             }
+            dr.Close();
+            cmd.Cancel();
             con.Close();
             return 0;
         }
@@ -100,6 +109,8 @@ namespace SocialWeb_MVC_.Models
                     ProfilePic = dr["ProfileImg"].ToString()
                 });
             }
+            dr.Close();
+            cmd.Cancel();
             con.Close();    
             return lst;
         }
@@ -110,7 +121,25 @@ namespace SocialWeb_MVC_.Models
             cmd.Parameters.AddWithValue("@uid", obj.Uid);
             con.Open();
             int i =cmd.ExecuteNonQuery();
+            cmd.Cancel();
             con.Close();   
+            if (i == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool updateProfileImgPath(string filename,int uid)
+        {
+            SqlCommand cmd = new SqlCommand("update Users set ProfileImg='ProfilePics/"+filename +"'where UserId = @uid", con);
+            cmd.Parameters.AddWithValue("@uid", uid);
+            if (con.State == System.Data.ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            int i = cmd.ExecuteNonQuery();
+            cmd.Cancel();
+            con.Close();
             if (i == 1)
             {
                 return true;
